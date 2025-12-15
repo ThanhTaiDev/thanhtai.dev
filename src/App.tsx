@@ -1,34 +1,24 @@
-import { BrowserRouter } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import { AppRoutes } from './routes/AppRoutes'
+import { MainPage } from './pages/MainPage'
 import { LoadingScreen } from './components/LoadingScreen'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    // Loading logic will be implemented here
-    // For now, just a placeholder
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
-
-    return () => clearTimeout(timer)
-  }, [])
+  const handleLoadingComplete = () => {
+    setIsLoading(false)
+  }
 
   if (isLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen onComplete={handleLoadingComplete} />
   }
 
   return (
-    <BrowserRouter>
-      <Layout>
-        <AppRoutes />
-      </Layout>
-    </BrowserRouter>
+    <Layout>
+      <MainPage />
+    </Layout>
   )
 }
 
 export default App
-

@@ -1,28 +1,32 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export function LoadingScreen() {
+interface LoadingScreenProps {
+  onComplete: () => void
+}
+
+export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
 
   useEffect(() => {
-    // Preload assets and update progress
     const loadAssets = async () => {
-      const images = [] // Will be populated with actual image paths
-      const totalAssets = images.length || 1
+      const images: string[] = []
+      const totalAssets = Math.max(images.length, 1)
       let loadedAssets = 0
 
+      // Cập nhật progress: 90% từ assets, 10% từ thời gian
       const updateProgress = () => {
-        const assetProgress = (loadedAssets / totalAssets) * 90 // 90% for assets
-        const timeProgress = Math.min(Date.now() - startTime, 1800) / 1800 * 10 // 10% for time
+        const assetProgress = (loadedAssets / totalAssets) * 90
+        const timeProgress = Math.min(Date.now() - startTime, 1800) / 1800 * 10
         const total = Math.min(assetProgress + timeProgress, 100)
         setProgress(total)
       }
 
       const startTime = Date.now()
-      const progressInterval = setInterval(updateProgress, 16) // ~60fps
+      const progressInterval = setInterval(updateProgress, 16)
 
-      // Simulate asset loading
+      // Preload images nếu có
       if (images.length > 0) {
         await Promise.all(
           images.map((src) =>
@@ -40,9 +44,13 @@ export function LoadingScreen() {
             })
           )
         )
+      } else {
+        // Đảm bảo animation mượt trong 1.8s
+        await new Promise((resolve) => setTimeout(resolve, 1800))
+        loadedAssets = totalAssets
       }
 
-      // Ensure minimum loading time and smooth animation
+      // Đảm bảo tối thiểu 1.8s loading
       const elapsed = Date.now() - startTime
       const remaining = Math.max(0, 1800 - elapsed)
       await new Promise((resolve) => setTimeout(resolve, remaining))
@@ -52,17 +60,18 @@ export function LoadingScreen() {
 
       setTimeout(() => {
         setIsComplete(true)
+        setTimeout(onComplete, 500)
       }, 300)
     }
 
     loadAssets()
-  }, [])
+  }, [onComplete])
 
   return (
     <AnimatePresence>
       {!isComplete && (
         <motion.div
-          className="fixed inset-0 z-[100] bg-dark-900 flex items-center justify-center"
+          className="fixed inset-0 z-[100] bg-gradient-to-br from-dark-900 via-purple-900/20 to-dark-900 flex items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
@@ -102,4 +111,3 @@ export function LoadingScreen() {
     </AnimatePresence>
   )
 }
-
