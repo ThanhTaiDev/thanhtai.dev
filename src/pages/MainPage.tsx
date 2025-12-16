@@ -7,10 +7,44 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import { useState, FormEvent } from 'react'
 import { Project } from '../types'
 
+// Mapping tech names to Devicon icon URLs
+const techIconMap: Record<string, string> = {
+  'TypeScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg',
+  'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
+  'HTML5': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
+  'Next.js': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg',
+  'NestJS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg',
+  'Zustand': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/zustand/zustand-original.svg',
+  'CSS3': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
+  'TailwindCSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
+  'Postman': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postman/postman-original.svg',
+  'PostgreSQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg',
+  'Git': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg',
+  'GitHub': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg',
+  'SQLite': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg',
+  'Vite': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg',
+  'Docker': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg',
+  'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
+  'Mongoose': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongoose/mongoose-original.svg',
+  'MongoDB': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg',
+  'Nodemon': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodemon/nodemon-original.svg',
+  'Node.js': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original-wordmark.svg',
+  'React': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg',
+  'Express': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg',
+  'Socket.io': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg',
+  'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',
+  'GraphQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg',
+  'Railway': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/railway/railway-original.svg',
+  'Vercel': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg',
+  'Prisma': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg',
+}
+
 const techStack = [
-  'React', 'TypeScript', 'Node.js', 'TailwindCSS',
-  'Vite', 'Framer Motion', 'HTML5', 'CSS3',
-  'JavaScript', 'Git', 'MongoDB', 'Docker'
+  'TypeScript', 'MySQL', 'HTML5', 'Next.js', 'NestJS', 'Zustand',
+  'CSS3', 'TailwindCSS', 'Postman', 'PostgreSQL', 'Git', 'GitHub',
+  'SQLite', 'Vite', 'Docker', 'JavaScript', 'Mongoose', 'MongoDB',
+  'Nodemon', 'Node.js', 'React', 'Express', 'Socket.io', 'Bootstrap',
+  'GraphQL', 'Railway', 'Vercel', 'Prisma'
 ]
 
 const timeline = [
@@ -214,19 +248,33 @@ export function MainPage() {
             <h2 className="text-2xl font-semibold text-center text-gray-300 mb-8">
               Tech Stack
             </h2>
-            <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
-              {techStack.map((tech, index) => (
-                <motion.div
-                  key={tech}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={heroIntersected ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{ scale: 1.1, y: -5 }}
-                  className="px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm font-medium text-primary-400 hover:border-primary-500 transition-colors"
-                >
-                  {tech}
-                </motion.div>
-              ))}
+            <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+              {techStack.map((tech, index) => {
+                const iconUrl = techIconMap[tech]
+                return (
+                  <motion.div
+                    key={tech}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={heroIntersected ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    whileHover={{ scale: 1.1, y: -5 }}
+                    className="flex flex-col items-center gap-2 p-3 bg-dark-800 border border-dark-700 rounded-lg hover:border-primary-500 transition-colors"
+                    title={tech}
+                  >
+                    {iconUrl ? (
+                      <div className="w-16 h-16 rounded-full bg-white/30 border-2 border-white/40 flex items-center justify-center p-2 hover:bg-white/40 hover:border-white/60 transition-all shadow-lg backdrop-blur-sm">
+                        <img 
+                          src={iconUrl} 
+                          alt={tech}
+                          className="w-10 h-10 object-contain brightness-120 contrast-120 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-sm font-medium text-primary-400">{tech}</span>
+                    )}
+                  </motion.div>
+                )
+              })}
             </div>
           </motion.div>
         </div>
