@@ -198,7 +198,7 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
     for (let i = 0; i < count; i++) {
       const x = Math.random() * width
       const y = Math.random() * height
-      const length = 250 * Math.random() + 50
+      const length = 285 * Math.random() + 66.5
       const segmentCount = 30
       const initialAngle = 2 * Math.random() * Math.PI
       tentaclesRef.current.push(new Tentacle(x, y, length, segmentCount, initialAngle))
@@ -367,7 +367,7 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
       }
 
       // Vẽ core node
-      const coreRadius = distance(prevCore.x, prevCore.y, core.x, core.y) + 5
+      const coreRadius = distance(prevCore.x, prevCore.y, core.x, core.y) + 9.5
       ctx.beginPath()
       ctx.arc(core.x, core.y, coreRadius, 0, 2 * Math.PI)
       ctx.fillStyle = 'hsl(210, 60%, 92%)'
