@@ -156,16 +156,16 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
         let strokeColor: string
         // 5% tentacles có accent color
         if (this.rand < 0.05) {
-          strokeColor = 'hsl(200, 80%, 70%)'
+          strokeColor = 'hsl(270, 80%, 70%)'
         } else if (distRatio < 0.33) {
           // Near: gần core
-          strokeColor = 'hsl(210, 40%, 95%)'
+          strokeColor = 'hsl(270, 40%, 95%)'
         } else if (distRatio < 0.66) {
           // Mid: giữa
           strokeColor = 'hsl(0, 0%, 88%)'
         } else {
           // Far: xa core
-          strokeColor = 'hsl(210, 20%, 70%)'
+          strokeColor = 'hsl(270, 20%, 70%)'
         }
         
         ctx.strokeStyle = strokeColor
@@ -185,9 +185,9 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
         ctx.arc(this.x, this.y, 2 * this.rand + 1, 0, 2 * Math.PI)
         ctx.fillStyle = '#ffffff'
       } else {
-        // Far: xanh nhạt
+        // Far: tím nhạt
         ctx.arc(this.x, this.y, 2 * this.rand, 0, 2 * Math.PI)
-        ctx.fillStyle = 'rgba(180, 200, 220, 0.6)'
+        ctx.fillStyle = 'rgba(192, 132, 252, 0.6)'
       }
       ctx.fill()
     }
@@ -370,7 +370,7 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
       const coreRadius = distance(prevCore.x, prevCore.y, core.x, core.y) + 9.5
       ctx.beginPath()
       ctx.arc(core.x, core.y, coreRadius, 0, 2 * Math.PI)
-      ctx.fillStyle = 'hsl(210, 60%, 92%)'
+      ctx.fillStyle = 'hsl(270, 60%, 92%)'
       ctx.fill()
 
       // Update và vẽ particles trước
@@ -412,7 +412,14 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ background: 'transparent' }}
+      style={{ 
+        background: 'transparent',
+        width: '100%',
+        height: '100%',
+        display: 'block',
+        margin: 0,
+        padding: 0
+      }}
     />
   )
 }

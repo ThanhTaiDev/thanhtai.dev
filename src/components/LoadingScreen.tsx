@@ -71,7 +71,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <AnimatePresence>
       {!isComplete && (
         <motion.div
-          className="fixed inset-0 z-[100] bg-gradient-to-br from-dark-900 via-purple-900/20 to-dark-900 flex items-center justify-center"
+          className="fixed inset-0 z-[100] bg-gradient-to-br from-[#0B061A] via-[#120A2F] to-[#0B061A] flex items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}

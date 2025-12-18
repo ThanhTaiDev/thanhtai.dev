@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 const codeLines = [
   'const developer = {',
-  '  name: "Your Name",',
+  '  name: "Thanh Tai",',
   '  role: "Web Developer",',
   '  skills: [',
   '    "React", "TypeScript",',
@@ -109,7 +109,7 @@ export function CodingScreen() {
       </div>
 
       {/* Glow Effect */}
-      <div className="absolute inset-0 bg-primary-500/20 blur-3xl -z-10 rounded-lg"></div>
+      <div className="absolute inset-0 blur-3xl -z-10 rounded-lg" style={{ backgroundColor: 'rgba(167, 139, 250, 0.35)' }}></div>
     </motion.div>
   )
 }
