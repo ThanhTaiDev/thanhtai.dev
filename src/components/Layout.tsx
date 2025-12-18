@@ -25,11 +25,11 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <LayoutContext.Provider value={{ canvasEnabled, setCanvasEnabled }}>
-      <div className="min-h-screen relative overflow-x-hidden">
+      <div className="min-h-screen relative overflow-x-hidden w-full bg-transparent">
         <AnimatedBackground />
         <CanvasOverlay enabled={canvasEnabled} />
         <Navbar />
-        <main className="relative z-10 snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth">
+        <main className="relative z-10 snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth w-full bg-transparent">
           {children}
         </main>
       </div>
