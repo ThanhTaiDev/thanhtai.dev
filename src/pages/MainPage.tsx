@@ -237,13 +237,11 @@ export function MainPage() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
     if (element) {
-      const offset = 80
-      const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - offset
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+      // Với scroll snap, chỉ cần scroll đến vị trí của element
+      // Scroll snap sẽ tự động snap vào đúng vị trí
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       })
     }
   }
@@ -279,16 +277,15 @@ export function MainPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section id="home" className="min-h-screen pt-16 flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+      <section id="home" className="h-screen snap-start snap-always pt-16 flex items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
             <motion.div
               ref={heroRef}
               className="text-left"
-              initial={{ opacity: 0, x: -30 }}
-              animate={heroIntersected ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 1, x: 0 }}
             >
               <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary-400 via-purple-400 to-primary-600 bg-clip-text text-transparent">
                 {displayedTitle}
@@ -345,15 +342,21 @@ export function MainPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="min-h-screen pt-16 flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <SectionTitle>About Me</SectionTitle>
+      <section id="about" className="h-screen snap-start snap-always pt-16 flex items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={aboutIntersected ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionTitle>About Me</SectionTitle>
+          </motion.div>
 
           <div ref={aboutRef} className="grid md:grid-cols-2 gap-8 mb-16">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -50 }}
               animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card>
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Profile</h3>
@@ -370,9 +373,9 @@ export function MainPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 50 }}
               animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Card>
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Education</h3>
@@ -390,7 +393,7 @@ export function MainPage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={aboutIntersected ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
             <h3 className="text-2xl font-semibold text-primary-400 mb-8">Timeline</h3>
             <div className="space-y-6">
@@ -399,7 +402,7 @@ export function MainPage() {
                   key={item.year}
                   initial={{ opacity: 0, x: -30 }}
                   animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                  transition={{ duration: 0.6, delay: 0.5 + index * 0.15 }}
                 >
                   <Card>
                     <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -424,20 +427,30 @@ export function MainPage() {
       </section>
 
       {/* Portfolio Showcase Section */}
-      <section id="portfolio" className="min-h-screen pt-16 flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-12">
+      <section id="portfolio" className="min-h-screen snap-start snap-always pt-16 flex items-start">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-6"
+          >
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-400 via-purple-400 to-primary-600 bg-clip-text text-transparent">
               Portfolio Showcase
             </h2>
             <p className="text-gray-300 text-lg max-w-3xl mx-auto">
               Explore my journey through projects, certifications, and technical expertise. Each section represents a milestone in my continuous learning path.
             </p>
-          </div>
+          </motion.div>
 
           {/* Tabs */}
-          <div ref={portfolioRef} className="mb-8">
-            <div className="flex justify-center gap-4 mb-8">
+          <div ref={portfolioRef} className="mb-4 flex-shrink-0">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex justify-center gap-4 mb-4"
+            >
               {[
                 { id: 'projects' as const, label: 'Projects', icon: '<>' },
                 { id: 'certificates' as const, label: 'Certificates', icon: '🎓' },
@@ -456,7 +469,7 @@ export function MainPage() {
                   {tab.label}
                 </button>
               ))}
-            </div>
+            </motion.div>
 
             {/* Tab Content */}
             <motion.div
@@ -464,48 +477,87 @@ export function MainPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
+              className="flex-1"
             >
               {/* Projects Tab */}
               {activeTab === 'projects' && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {projects.map((project, index) => (
-                    <motion.div
-                      key={project.id}
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{ y: -5 }}
-                    >
-                      <Card className="cursor-pointer h-full flex flex-col" onClick={() => setSelectedProject(project)}>
-                        <div className="aspect-video bg-dark-700 rounded-lg mb-4 overflow-hidden">
-                          <img
-                            src={project.image}
-                            alt={project.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <h3 className="text-xl font-semibold text-primary-400 mb-2">
-                          {project.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-4 flex-1 line-clamp-2">
-                          {project.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {project.stack.slice(0, 3).map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-2 py-1 bg-dark-700 text-xs text-primary-400 rounded"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                        <Button variant="outline" className="w-full">
-                          View Details
-                        </Button>
-                      </Card>
-                    </motion.div>
-                  ))}
+                <div className="space-y-12">
+                  {/* Header */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <p className="text-sm uppercase tracking-wider text-gray-400 mb-2">MY WORK</p>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Projects.</h2>
+                    <p className="text-gray-300 max-w-3xl">
+                      Following projects showcases my skills and experience through real-world examples of my work. 
+                      Each project is briefly described with links to code repositories and live demos in it. 
+                      It reflects my ability to solve complex problems, work with different technologies, and manage projects effectively.
+                    </p>
+                  </motion.div>
+
+                  {/* Projects Grid */}
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {projects.slice(0, 3).map((project, index) => (
+                      <motion.div
+                        key={project.id}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.6, delay: 0.2 + index * 0.15 }}
+                        whileHover={{ y: -8 }}
+                        className="cursor-pointer"
+                        onClick={() => setSelectedProject(project)}
+                      >
+                        <Card className="h-full flex flex-col bg-dark-800/50 border border-dark-700 hover:border-primary-500/50 transition-all">
+                          {/* Project Image */}
+                          <div className="relative mb-6 rounded-lg overflow-hidden bg-white">
+                            <img
+                              src={project.image}
+                              alt={project.title}
+                              className="w-full h-auto object-cover"
+                            />
+                            {/* GitHub Icon Overlay */}
+                            {project.links.github && (
+                              <a
+                                href={project.links.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                              >
+                                <svg className="w-6 h-6 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Project Info */}
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold text-white mb-3">
+                              {project.title}
+                            </h3>
+                            <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                              {project.description}
+                            </p>
+                            
+                            {/* Technologies as Hashtags */}
+                            <div className="flex flex-wrap gap-2">
+                              {project.stack.map((tech) => (
+                                <span
+                                  key={tech}
+                                  className="text-primary-400 text-sm font-medium"
+                                >
+                                  #{tech.toLowerCase().replace(/\s+/g, '')}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -557,33 +609,35 @@ export function MainPage() {
 
               {/* Tech Stack Tab */}
               {activeTab === 'techstack' && (
-                <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
-                  {techStack.map((tech, index) => {
-                    const iconUrl = techIconMap[tech]
-                    return (
-                      <motion.div
-                        key={tech}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={portfolioIntersected ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ duration: 0.3, delay: index * 0.03 }}
-                        whileHover={{ scale: 1.1, y: -5 }}
-                        className="flex flex-col items-center gap-2 p-3 bg-dark-800 border border-dark-700 rounded-lg hover:border-primary-500 transition-colors"
-                        title={tech}
-                      >
-                        {iconUrl ? (
-                          <div className="w-16 h-16 rounded-full bg-white/30 border-2 border-white/40 flex items-center justify-center p-2 hover:bg-white/40 hover:border-white/60 transition-all shadow-lg backdrop-blur-sm">
-                            <img 
-                              src={iconUrl} 
-                              alt={tech}
-                              className="w-10 h-10 object-contain brightness-120 contrast-120 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
-                            />
-                          </div>
-                        ) : (
-                          <span className="text-sm font-medium text-primary-400">{tech}</span>
-                        )}
-                      </motion.div>
-                    )
-                  })}
+                <div className="pt-8">
+                  <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-8 max-w-6xl mx-auto">
+                    {techStack.map((tech, index) => {
+                      const iconUrl = techIconMap[tech]
+                      return (
+                        <motion.div
+                          key={tech}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={portfolioIntersected ? { opacity: 1, scale: 1 } : {}}
+                          transition={{ duration: 0.3, delay: index * 0.02 }}
+                          whileHover={{ scale: 1.15, y: -8 }}
+                          className="flex flex-col items-center justify-center"
+                          title={tech}
+                        >
+                          {iconUrl ? (
+                            <div className="w-20 h-20 rounded-full bg-white/30 border-2 border-white/40 flex items-center justify-center p-3 hover:bg-white/40 hover:border-white/60 transition-all shadow-lg backdrop-blur-sm cursor-pointer">
+                              <img 
+                                src={iconUrl} 
+                                alt={tech}
+                                className="w-14 h-14 object-contain brightness-120 contrast-120 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-sm font-medium text-primary-400">{tech}</span>
+                          )}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </motion.div>
@@ -649,15 +703,21 @@ export function MainPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="min-h-screen pt-16 flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <SectionTitle>Contact Me</SectionTitle>
+      <section id="contact" className="h-screen snap-start snap-always pt-16 flex items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={contactIntersected ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionTitle>Contact Me</SectionTitle>
+          </motion.div>
 
           <div ref={contactRef} className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card>
                 <h3 className="text-2xl font-semibold text-primary-400 mb-6">
@@ -689,9 +749,9 @@ export function MainPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Card>
                 <h3 className="text-2xl font-semibold text-primary-400 mb-6">
