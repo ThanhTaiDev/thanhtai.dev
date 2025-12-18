@@ -16,21 +16,25 @@ export function Navbar() {
   // Scroll spy để highlight active section
   useEffect(() => {
     const handleScroll = () => {
-      const viewportHeight = window.innerHeight
-      const threshold = viewportHeight * 0.5 // 50% của viewport
+      // Với scroll snap, section sẽ snap vào top của viewport
+      // Tìm section nào đang ở top của viewport (rect.top gần 0 nhất)
+      let activeId = navItems[navItems.length - 1].id // Default to last section
+      let closestToTop = Infinity
       
-      // Tìm section nào đang ở gần top của viewport nhất (với scroll snap, section sẽ snap vào top)
-      let activeId = navItems[0].id
-      
-      // Duyệt từ trên xuống để tìm section đầu tiên có top < threshold
-      for (const item of navItems) {
+      // Duyệt từ cuối lên để ưu tiên section ở cuối nếu có nhiều section cùng visible
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        const item = navItems[i]
         const element = document.getElementById(item.id)
         if (element) {
           const rect = element.getBoundingClientRect()
-          // Nếu section này đang ở trong viewport (top < threshold và bottom > 0)
-          if (rect.top <= threshold && rect.bottom > 0) {
-            activeId = item.id
-            break
+          // Nếu section này có top >= 0 và top <= một threshold nhỏ (đang ở đầu viewport)
+          // Hoặc nếu section này là section cuối cùng và đang visible
+          if (rect.top >= -50 && rect.top <= 100) {
+            // Section này đang ở đầu viewport
+            if (Math.abs(rect.top) < closestToTop) {
+              closestToTop = Math.abs(rect.top)
+              activeId = item.id
+            }
           }
         }
       }
@@ -65,15 +69,15 @@ export function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-900/80 backdrop-blur-md border-b border-dark-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           <div className="flex-shrink-0">
             <button
               onClick={() => scrollToSection('home')}
-              className="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors"
+              className="text-3xl font-bold text-primary-400 hover:text-primary-300 transition-colors"
             >
-              Portfolio
+              Thanh Tai
             </button>
           </div>
 
@@ -84,7 +88,7 @@ export function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`relative px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`relative px-3 py-1.5 text-lg font-medium transition-colors ${
                     isActive
                       ? 'text-primary-400'
                       : 'text-gray-300 hover:text-primary-400'
