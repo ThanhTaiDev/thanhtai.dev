@@ -51,19 +51,24 @@ const techStack = [
 
 const timeline = [
   {
+    year: '2021',
+    title: 'Front-end Development Foundations',
+    description: 'Started learning HTML, CSS, and JavaScript, focusing on basic layouts, styling, and client-side logic.',
+  },
+  {
+    year: '2023',
+    title: 'Front-end & Backend Fundamentals',
+    description: 'Implemented front-end interfaces and basic backend services using JavaScript, handling API requests, data persistence, and authentication fundamentals.',
+  },
+  {
     year: '2024',
-    title: 'Senior Frontend Developer',
-    description: 'Phát triển các ứng dụng web hiện đại với React, TypeScript và các công nghệ mới nhất.',
+    title: 'Junior Front-end Development (Foundational Stage)',
+    description: 'Designed and implemented UI/UX for basic web projects, focusing on component structure, responsiveness, and usability.',
   },
   {
-    year: '2022',
-    title: 'Frontend Developer',
-    description: 'Xây dựng UI/UX cho các dự án web, tối ưu hiệu suất và trải nghiệm người dùng.',
-  },
-  {
-    year: '2020',
-    title: 'Junior Developer',
-    description: 'Bắt đầu sự nghiệp với HTML, CSS, JavaScript và học các framework hiện đại.',
+    year: '2025',
+    title: 'Modern Web Development (Generalist Level)',
+    description: 'Gained broad exposure to modern web technologies including React, Node.js, TypeScript, deployment platforms, and databases, with practical usage across multiple projects.',
   },
 ]
 
@@ -100,55 +105,54 @@ const categories = {
 const projects: Project[] = [
   {
     id: '1',
-    title: 'E-Commerce Platform',
-    description: 'Nền tảng thương mại điện tử hiện đại với React, TypeScript và Node.js. Tích hợp thanh toán, quản lý đơn hàng và dashboard admin.',
-    image: 'https://via.placeholder.com/600x400/3b82f6/ffffff?text=E-Commerce',
-    stack: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'TailwindCSS'],
+    title: 'Cinema Management System',
+    description: 'A project focused on building a cinema management system using React, TypeScript, and Node.js. The system enables the management of movies, showtimes, tickets, and users, and provides an administrative dashboard to support system operations.',
+    image: '/images/projects/cinema-management.png',
+    stack: ['React', 'TypeScript', 'Node.js'],
     links: {
-      live: 'https://example.com',
-      github: 'https://github.com/example',
+      live: 'http://website-xem-phim.vercel.app/',
+      github: 'https://github.com/ThanhTaiDev/Frontend_WebsiteXemPhim',
     },
   },
   {
     id: '2',
-    title: 'Task Management App',
-    description: 'Ứng dụng quản lý công việc với drag & drop, real-time updates và collaboration features.',
-    image: 'https://via.placeholder.com/600x400/8b5cf6/ffffff?text=Task+App',
-    stack: ['React', 'Redux', 'Firebase', 'Framer Motion'],
+    title: 'Online Traditional Market Platform',
+    description: 'A project that develops an online traditional marketplace platform using React, Node.js, and Prisma ORM. It supports the management of products, shops, orders, and users, and includes an administrative dashboard to facilitate system operations.',
+    image: '/images/projects/smart-market.png',
+    stack: ['React', 'Node.js', 'Prisma'],
     links: {
-      live: 'https://example.com',
-      github: 'https://github.com/example',
+      live: '',
+      github: 'https://github.com/ThanhTaiDev/Frontend_Market',
     },
   },
   {
     id: '3',
-    title: 'Portfolio Website',
-    description: 'Website portfolio hiện đại với animations và interactive effects. Responsive design và optimized performance.',
-    image: 'https://via.placeholder.com/600x400/06b6d4/ffffff?text=Portfolio',
-    stack: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion'],
+    title: 'Online Voting System',
+    description: 'A project centered on building an online voting system using React and Node.js. The system allows creating and managing polls, user authentication, vote recording, and provides an administrative dashboard for monitoring and analyzing results.',
+    image: '/images/projects/voting-system.png',
+    stack: ['React', 'Node.js'],
     links: {
-      live: 'https://example.com',
-      github: 'https://github.com/example',
-    },
-  },
-  {
-    id: '4',
-    title: 'Weather Dashboard',
-    description: 'Dashboard hiển thị thời tiết với API integration, charts và location-based forecasts.',
-    image: 'https://via.placeholder.com/600x400/10b981/ffffff?text=Weather',
-    stack: ['React', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-    links: {
-      live: 'https://example.com',
-      github: 'https://github.com/example',
+      live: '',
+      github: 'https://github.com/ThanhTaiDev/Project_BoPhieu_FE_BE',
     },
   },
 ]
 
 const socialLinks = [
-  { name: 'GitHub', url: 'https://github.com', icon: 'github' },
-  { name: 'Facebook', url: 'https://facebook.com', icon: 'facebook' },
-  { name: 'Instagram', url: 'https://instagram.com', icon: 'instagram' },
+  { name: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', label: "Let's Connect" },
+  { name: 'Instagram', url: 'https://www.instagram.com/_thanhtaisosad_/', icon: 'instagram', label: '@_thanhtaisosad_' },
+  { name: 'Youtube', url: 'https://youtube.com', icon: 'youtube', label: '@thanhtai' },
+  { name: 'GitHub', url: 'https://github.com/ThanhTaiDev', icon: 'github', label: '@ThanhTaiDev' },
+  { name: 'TikTok', url: 'https://tiktok.com', icon: 'tiktok', label: '@thanhtai' },
 ]
+
+interface Comment {
+  id: string
+  name: string
+  message: string
+  timestamp: string
+  isPinned?: boolean
+}
 
 interface Certificate {
   id: string
@@ -157,44 +161,31 @@ interface Certificate {
   image?: string
   date?: string
   link?: string
+  description?: string
 }
 
 const certificates: Certificate[] = [
   {
     id: '1',
-    title: 'Belajar Dasar Pemrograman JavaScript',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+1',
+    title: 'Certificate of Achievement - Information Technology',
+    issuer: 'Awarded for outstanding achievement in Information Technology',
+    image: '/images/certificates/CERTIFICATE1.png',
+    date: 'August 2025',
+    description: 'This certificate is awarded to Vo Van Thanh Tai in recognition for outstanding achievement in Information Technology, demonstrating strong technical competence, analytical thinking, and practical problem-solving skills.',
   },
   {
     id: '2',
-    title: 'Belajar Dasar Visualisasi Data',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+2',
+    title: 'Certificate of Completion - Information Technology Certification Program',
+    issuer: 'Information Technology Certification Program',
+    image: '/images/certificates/CERTIFICATE2.png',
+    description: 'For successfully completing an Information Technology Certification Program.',
   },
   {
     id: '3',
-    title: 'Belajar Membuat Aplikasi Web dengan React',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+3',
-  },
-  {
-    id: '4',
-    title: 'Belajar Membuat Front-End Web untuk Pemula',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+4',
-  },
-  {
-    id: '5',
-    title: 'Belajar Dasar Pemrograman Web',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+5',
-  },
-  {
-    id: '6',
-    title: 'Memulai Dasar Pemrograman untuk Menjadi Pengembang Software',
-    issuer: 'Dicoding',
-    image: 'https://via.placeholder.com/400x250/ffffff/000000?text=Certificate+6',
+    title: 'Certificate of Achievement - Information Technology',
+    issuer: 'Awarded for achievement in Information Technology',
+    image: '/images/certificates/CERTIFICATE.png',
+    description: 'For achievement in Information Technology and demonstrated technical excellence.',
   },
 ]
 
@@ -210,10 +201,52 @@ export function MainPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  
+  // Comments state
+  interface Comment {
+    id: string
+    name: string
+    message: string
+    timestamp: string
+    isPinned?: boolean
+  }
+  const [comments, setComments] = useState<Comment[]>([
+    {
+      id: '1',
+      name: 'John Doe',
+      message: 'Great work on this portfolio! The design is clean and modern.',
+      timestamp: '2 hours ago',
+      isPinned: true,
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      message: 'I really like your projects. Keep up the good work!',
+      timestamp: '5 hours ago',
+    },
+  ])
+  const [commentData, setCommentData] = useState({ name: '', message: '' })
+  
+  const handleCommentSubmit = (e: FormEvent) => {
+    e.preventDefault()
+    if (!commentData.name.trim() || !commentData.message.trim()) return
+    
+    const newComment: Comment = {
+      id: Date.now().toString(),
+      name: commentData.name,
+      message: commentData.message,
+      timestamp: 'Just now',
+    }
+    setComments([newComment, ...comments])
+    setCommentData({ name: '', message: '' })
+  }
 
   // Typing effects - both lines start together
-  const titleText = 'Welcome to My Portfolio'
+  const titleText = 'Frontend Developer'
   const subtitleText = 'Building modern web experiences with cutting-edge technology'
+  
+  // Hero skills badges
+  const heroSkills = ['React', 'JavaScript', 'Node.js', 'TailwindCSS']
   
   const [startTyping, setStartTyping] = useState(false)
   
@@ -248,16 +281,16 @@ export function MainPage() {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
-    if (!formData.name.trim()) newErrors.name = 'Tên là bắt buộc'
+    if (!formData.name.trim()) newErrors.name = 'Name is required'
     if (!formData.email.trim()) {
-      newErrors.email = 'Email là bắt buộc'
+      newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email không hợp lệ'
+      newErrors.email = 'Invalid email'
     }
     if (!formData.message.trim()) {
-      newErrors.message = 'Tin nhắn là bắt buộc'
+      newErrors.message = 'Message is required'
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Tin nhắn phải có ít nhất 10 ký tự'
+      newErrors.message = 'Message must be at least 10 characters'
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -275,9 +308,9 @@ export function MainPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-transparent">
       {/* Hero Section */}
-      <section id="home" className="h-screen snap-start snap-always pt-16 flex items-center">
+      <section id="home" className="h-screen snap-start snap-always pt-16 flex items-center bg-transparent">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
@@ -287,20 +320,54 @@ export function MainPage() {
               initial={{ opacity: 1, x: 0 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary-400 via-purple-400 to-primary-600 bg-clip-text text-transparent">
-                {displayedTitle}
-                {isTypingTitle && <span className="animate-pulse">|</span>}
+              <p className="text-lg md:text-xl text-primary-400 mb-4 font-medium">
+                Hi, I'm Thanh Tai
+              </p>
+              
+              {/* Main Heading - Split with different colors */}
+              <h1 className="text-5xl md:text-7xl font-bold mb-4">
+                <span className="text-white">Frontend</span>{' '}
+                <span className="text-purple-400">Developer</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-8">
+              
+              <p className="text-xl md:text-2xl text-gray-300 mb-6">
                 {displayedSubtitle}
                 {isTypingSubtitle && <span className="animate-pulse">|</span>}
               </p>
+              
+              {/* Skills Badges */}
+              <div className="flex flex-wrap gap-3 mb-8">
+                {heroSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="px-4 py-2 bg-dark-800/50 border border-dark-700 rounded-lg text-sm font-medium text-gray-300"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+              
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button 
                   variant="primary" 
                   onClick={() => scrollToSection('portfolio')}
+                  className="flex items-center justify-center gap-2"
                 >
-                  View Projects
+                  <span>Projects</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => scrollToSection('contact')}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>Contact</span>
                 </Button>
               </div>
               
@@ -316,18 +383,21 @@ export function MainPage() {
                     title={link.name}
                   >
                     {link.icon === 'github' && (
-                      <svg className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      <svg role="img" className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <title>GitHub</title>
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                       </svg>
                     )}
                     {link.icon === 'facebook' && (
-                      <svg className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <svg role="img" className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <title>Facebook</title>
+                        <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
                       </svg>
                     )}
                     {link.icon === 'instagram' && (
-                      <svg className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      <svg role="img" className="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <title>Instagram</title>
+                        <path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/>
                       </svg>
                     )}
                   </a>
@@ -342,7 +412,7 @@ export function MainPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="h-screen snap-start snap-always pt-16 flex items-center">
+      <section id="about" className="h-screen snap-start snap-always pt-16 flex items-center bg-transparent">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -361,13 +431,10 @@ export function MainPage() {
               <Card>
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Profile</h3>
                 <p className="text-gray-300 leading-relaxed mb-4">
-                  Tôi là một Frontend Developer đam mê tạo ra những trải nghiệm web tuyệt vời. 
-                  Với kiến thức sâu về React, TypeScript và các công nghệ hiện đại, tôi luôn 
-                  tìm cách tối ưu hiệu suất và cải thiện trải nghiệm người dùng.
+                  I am a Frontend Developer passionate about creating outstanding web experiences. With a solid foundation in React, Node.js, TypeScript, and modern web technologies, I continuously strive to optimize performance and enhance user experience.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
-                  Tôi thích học hỏi các công nghệ mới và áp dụng chúng vào các dự án thực tế. 
-                  Luôn đặt chất lượng code và user experience lên hàng đầu.
+                  I enjoy learning new technologies and applying them to real-world projects, always prioritizing code quality and user experience in everything I build.
                 </p>
               </Card>
             </motion.div>
@@ -381,9 +448,8 @@ export function MainPage() {
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Education</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-lg font-medium text-gray-200 mb-2">Computer Science</h4>
-                    <p className="text-gray-400">University Degree</p>
-                    <p className="text-sm text-gray-500">2018 - 2022</p>
+                    <p className="text-sm text-gray-400 mb-2">2022-2026</p>
+                    <h4 className="text-lg font-medium text-gray-200">Duy Tan University</h4>
                   </div>
                 </div>
               </Card>
@@ -427,7 +493,7 @@ export function MainPage() {
       </section>
 
       {/* Portfolio Showcase Section */}
-      <section id="portfolio" className="min-h-screen snap-start snap-always pt-16 flex items-start">
+      <section id="portfolio" className="min-h-screen snap-start snap-always pt-16 flex items-start bg-transparent">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
           <motion.div
             initial={{ opacity: 0, y: -30 }}
@@ -489,7 +555,6 @@ export function MainPage() {
                     transition={{ duration: 0.6 }}
                   >
                     <p className="text-sm uppercase tracking-wider text-gray-400 mb-2">MY WORK</p>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Projects.</h2>
                     <p className="text-gray-300 max-w-3xl">
                       Following projects showcases my skills and experience through real-world examples of my work. 
                       Each project is briefly described with links to code repositories and live demos in it. 
@@ -543,7 +608,7 @@ export function MainPage() {
                             </p>
                             
                             {/* Technologies as Hashtags */}
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 mb-4">
                               {project.stack.map((tech) => (
                                 <span
                                   key={tech}
@@ -553,6 +618,29 @@ export function MainPage() {
                                 </span>
                               ))}
                             </div>
+                            
+                            {/* View Live Demo Button */}
+                            <a
+                              href={project.links.live || '#'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                if (!project.links.live) {
+                                  e.preventDefault()
+                                }
+                              }}
+                              className={`inline-flex items-center justify-center px-4 py-2 rounded-lg transition-all ${
+                                project.links.live
+                                  ? 'bg-primary-500 hover:bg-primary-600 text-white cursor-pointer'
+                                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                              }`}
+                            >
+                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                              View Live Demo
+                            </a>
                           </div>
                         </Card>
                       </motion.div>
@@ -581,7 +669,7 @@ export function MainPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-6">
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-6">
                               <div className="text-center">
                                 <div className="text-4xl mb-4">🎓</div>
                                 <h4 className="font-bold text-gray-800 mb-2">{cert.issuer}</h4>
@@ -610,7 +698,7 @@ export function MainPage() {
               {/* Tech Stack Tab */}
               {activeTab === 'techstack' && (
                 <div className="pt-8">
-                  <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-8 max-w-6xl mx-auto">
+                  <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-6 max-w-6xl mx-auto">
                     {techStack.map((tech, index) => {
                       const iconUrl = techIconMap[tech]
                       return (
@@ -624,13 +712,21 @@ export function MainPage() {
                           title={tech}
                         >
                           {iconUrl ? (
-                            <div className="w-20 h-20 rounded-full bg-white/30 border-2 border-white/40 flex items-center justify-center p-3 hover:bg-white/40 hover:border-white/60 transition-all shadow-lg backdrop-blur-sm cursor-pointer">
+                            <motion.div 
+                              className="w-20 h-20 rounded-full bg-white/30 border-2 border-white/40 flex items-center justify-center p-2 cursor-pointer group hover:bg-white/40 hover:border-white/60 transition-all duration-300 shadow-lg backdrop-blur-sm relative"
+                              whileHover={{ 
+                                boxShadow: "0 20px 40px rgba(167, 139, 250, 0.35)",
+                              }}
+                            >
+                              {/* Glow effect on hover */}
+                              <div className="absolute inset-0 bg-primary-500/0 group-hover:bg-primary-500/20 rounded-full transition-all duration-300"></div>
+                              
                               <img 
                                 src={iconUrl} 
                                 alt={tech}
-                                className="w-14 h-14 object-contain brightness-120 contrast-120 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                                className="w-14 h-14 object-contain brightness-120 contrast-120 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] group-hover:drop-shadow-[0_0_20px_rgba(167,139,250,0.6)] transition-all duration-300 relative z-10"
                               />
-                            </div>
+                            </motion.div>
                           ) : (
                             <span className="text-sm font-medium text-primary-400">{tech}</span>
                           )}
@@ -703,44 +799,157 @@ export function MainPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="h-screen snap-start snap-always pt-16 flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={contactIntersected ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <SectionTitle>Contact Me</SectionTitle>
-          </motion.div>
-
-          <div ref={contactRef} className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <section id="contact" className="h-screen snap-start snap-always pt-16 flex flex-col bg-transparent overflow-y-auto">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8">
+          <div ref={contactRef} className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            {/* Left Column - Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card>
-                <h3 className="text-2xl font-semibold text-primary-400 mb-6">
-                  Get in Touch
-                </h3>
-                <p className="text-gray-300 mb-8 leading-relaxed">
-                  Bạn có dự án thú vị? Hoặc muốn hợp tác? Hãy liên hệ với tôi qua form bên cạnh 
-                  hoặc các kênh social media.
+                {/* Title with icon */}
+                <div className="flex items-center gap-3 mb-3">
+                  <h3 className="text-3xl font-bold text-primary-400">Contact</h3>
+                  <svg className="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                </div>
+                
+                <p className="text-gray-400 mb-8">
+                  Have something to discuss? Send me a message and let's talk.
                 </p>
 
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-200">Social Links</h4>
-                  <div className="flex flex-wrap gap-4">
+                {/* Contact Form */}
+                {submitSuccess && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-sm"
+                  >
+                    Thank you! Your message has been sent successfully.
+                  </motion.div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4 mb-8">
+                  {/* Name Field */}
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className={`w-full pl-12 pr-4 py-3 bg-primary-500/10 border rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all ${
+                        errors.name ? 'border-red-500' : 'border-primary-500/30 hover:border-primary-500/50'
+                      }`}
+                      placeholder="Your Name"
+                    />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+                    )}
+                  </div>
+
+                  {/* Email Field */}
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className={`w-full pl-12 pr-4 py-3 bg-primary-500/10 border rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all ${
+                        errors.email ? 'border-red-500' : 'border-primary-500/30 hover:border-primary-500/50'
+                      }`}
+                      placeholder="Your Email"
+                    />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                    )}
+                  </div>
+
+                  {/* Message Field */}
+                  <div className="relative">
+                    <div className="absolute left-4 top-4 text-gray-400">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      rows={4}
+                      className={`w-full pl-12 pr-4 py-3 bg-primary-500/10 border rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none transition-all ${
+                        errors.message ? 'border-red-500' : 'border-primary-500/30 hover:border-primary-500/50'
+                      }`}
+                      placeholder="Your Message"
+                    />
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-400">{errors.message}</p>
+                    )}
+                  </div>
+
+                  {/* Send Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 flex items-center justify-center gap-2"
+                  >
+                    <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  </button>
+                </form>
+
+                {/* Connect With Me Section */}
+                <div className="border-t border-dark-700 pt-6">
+                  <h4 className="text-lg font-semibold text-gray-200 mb-4">Connect With Me</h4>
+                  <div className="grid grid-cols-1 gap-3">
                     {socialLinks.map((link) => (
                       <a
                         key={link.name}
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-dark-700 hover:bg-dark-600 rounded-lg text-gray-300 hover:text-primary-400 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group"
                       >
-                        <span>{link.icon}</span>
-                        <span>{link.name}</span>
+                        {link.icon === 'linkedin' && (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                          </svg>
+                        )}
+                        {link.icon === 'instagram' && (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                          </svg>
+                        )}
+                        {link.icon === 'youtube' && (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                          </svg>
+                        )}
+                        {link.icon === 'github' && (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                          </svg>
+                        )}
+                        {link.icon === 'tiktok' && (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                          </svg>
+                        )}
+                        <span className="text-sm font-medium">{link.label || link.name}</span>
                       </a>
                     ))}
                   </div>
@@ -764,14 +973,14 @@ export function MainPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400"
                   >
-                    Cảm ơn bạn! Tin nhắn đã được gửi thành công.
+                    Thank you! Your message has been sent successfully.
                   </motion.div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                      Tên
+                      Name
                     </label>
                     <input
                       type="text"
@@ -781,7 +990,7 @@ export function MainPage() {
                       className={`w-full px-4 py-2 bg-dark-700 border rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                         errors.name ? 'border-red-500' : 'border-dark-600'
                       }`}
-                      placeholder="Nhập tên của bạn"
+                      placeholder="Enter your name"
                     />
                     {errors.name && (
                       <p className="mt-1 text-sm text-red-400">{errors.name}</p>
@@ -809,7 +1018,7 @@ export function MainPage() {
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                      Tin nhắn
+                      Message
                     </label>
                     <textarea
                       id="message"
@@ -819,7 +1028,7 @@ export function MainPage() {
                       className={`w-full px-4 py-2 bg-dark-700 border rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none ${
                         errors.message ? 'border-red-500' : 'border-dark-600'
                       }`}
-                      placeholder="Nhập tin nhắn của bạn..."
+                      placeholder="Enter your message..."
                     />
                     {errors.message && (
                       <p className="mt-1 text-sm text-red-400">{errors.message}</p>
@@ -832,7 +1041,7 @@ export function MainPage() {
                     className="w-full"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn'}
+                    {isSubmitting ? 'Sending...' : 'Send message'}
                   </Button>
                 </form>
               </Card>
