@@ -16,33 +16,50 @@ export function Navbar() {
   // Scroll spy để highlight active section
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.id))
-      const scrollPosition = window.scrollY + 100
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i]
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(navItems[i].id)
-          break
+      const viewportHeight = window.innerHeight
+      const threshold = viewportHeight * 0.5 // 50% của viewport
+      
+      // Tìm section nào đang ở gần top của viewport nhất (với scroll snap, section sẽ snap vào top)
+      let activeId = navItems[0].id
+      
+      // Duyệt từ trên xuống để tìm section đầu tiên có top < threshold
+      for (const item of navItems) {
+        const element = document.getElementById(item.id)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          // Nếu section này đang ở trong viewport (top < threshold và bottom > 0)
+          if (rect.top <= threshold && rect.bottom > 0) {
+            activeId = item.id
+            break
+          }
         }
       }
+      
+      setActiveSection(activeId)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    // Kiểm tra ngay khi mount và sau scroll snap
     handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
+    const intervalId = setInterval(handleScroll, 100)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearInterval(intervalId)
+    }
   }, [])
 
   const scrollToSection = (id: string) => {
+    // Cập nhật active section ngay lập tức
+    setActiveSection(id)
+    
     const element = document.getElementById(id)
     if (element) {
-      const offset = 80
-      const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - offset
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+      // Với scroll snap, chỉ cần scroll đến vị trí của element
+      // Scroll snap sẽ tự động snap vào đúng vị trí
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       })
     }
   }
