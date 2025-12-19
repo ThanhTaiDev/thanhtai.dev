@@ -20,13 +20,19 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:5173',
       'http://localhost:3000',
+      'https://www.thanhtai.dev',
+      'https://thanhtai.dev',
       process.env.FRONTEND_URL,
       // Vercel domains (will be added dynamically)
     ].filter(Boolean) // Remove undefined values
     
-    // In production, also allow Vercel preview deployments
+    // In production, also allow Vercel preview deployments and custom domains
     if (process.env.NODE_ENV === 'production') {
       if (origin.includes('vercel.app') || origin.includes('vercel.com')) {
+        return callback(null, true)
+      }
+      // Allow thanhtai.dev domain (with or without www)
+      if (origin.includes('thanhtai.dev')) {
         return callback(null, true)
       }
     }
@@ -34,6 +40,7 @@ const corsOptions = {
     if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
       callback(null, true)
     } else {
+      console.log(`❌ CORS blocked origin: ${origin}`)
       callback(new Error('Not allowed by CORS'))
     }
   },
