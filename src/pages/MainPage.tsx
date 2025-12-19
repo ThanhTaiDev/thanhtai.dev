@@ -808,9 +808,9 @@ export function MainPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="h-screen md:snap-start pt-16 flex flex-col bg-transparent overflow-y-auto overflow-x-hidden relative z-10">
-        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 py-6">
-          <div ref={contactRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+      <section id="contact" className="min-h-screen md:h-screen md:snap-start pt-16 flex flex-col bg-transparent overflow-x-hidden relative z-10">
+        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 py-6 pb-16 md:pb-6">
+          <div ref={contactRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-6 lg:gap-6 w-full items-start">
             {/* Left Column - Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -818,7 +818,7 @@ export function MainPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="flex flex-col w-full min-w-0"
             >
-              <Card className="flex flex-col h-[calc(100vh-180px)] w-full min-w-0">
+              <Card className="flex flex-col md:h-[calc(100vh-180px)] w-full min-w-0">
                 {/* Title with icon */}
                 <div className="flex items-center gap-2 mb-3">
                   <h3 className="text-xl font-bold text-primary-400">Contact</h3>
@@ -990,9 +990,9 @@ export function MainPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col w-full min-w-0"
+              className="flex flex-col w-full min-w-0 mt-6 lg:mt-0"
             >
-              <Card className="flex flex-col h-[calc(100vh-180px)] overflow-hidden w-full min-w-0">
+              <Card className="flex flex-col md:h-[calc(100vh-180px)] overflow-hidden w-full min-w-0">
                 <h3 className="text-lg font-semibold text-primary-400 mb-3 flex-shrink-0">
                   Comments ({comments.length})
                 </h3>
