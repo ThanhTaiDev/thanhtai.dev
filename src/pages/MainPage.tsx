@@ -280,7 +280,8 @@ export function MainPage() {
   
   const [startTyping, setStartTyping] = useState(false)
   
-  const { displayedText: _displayedTitle, isTyping: _isTypingTitle } = useTypingEffect(
+  // Title typing effect (not displayed, kept for potential future use)
+  useTypingEffect(
     titleText, 
     startTyping ? 40 : 0
   )
@@ -340,27 +341,27 @@ export function MainPage() {
   return (
     <div className="w-full bg-transparent relative">
       {/* Hero Section */}
-      <section id="home" className="h-screen snap-start pt-16 flex items-center bg-transparent relative z-10">
+      <section id="home" className="min-h-screen md:h-screen md:snap-start pt-20 md:pt-16 flex items-center bg-transparent relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-center">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-center w-full min-w-0">
             {/* Left Side - Text Content */}
             <motion.div
               ref={heroRef}
-              className="text-left min-w-0"
+              className="text-left min-w-0 w-full"
               initial={{ opacity: 1, x: 0 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <p className="text-lg md:text-xl text-primary-400 mb-4 font-medium">
+              <p className="text-base md:text-lg lg:text-xl text-primary-400 mb-3 md:mb-4 font-medium">
                 Hi, I'm Thanh Tai
               </p>
               
               {/* Main Heading - Split with different colors */}
-              <h1 className="text-5xl md:text-7xl font-bold mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-3 md:mb-4">
                 <span className="text-white">Frontend</span>{' '}
                 <span className="text-purple-400">Developer</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-gray-300 mb-6">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-4 md:mb-6">
                 {displayedSubtitle}
                 {isTypingSubtitle && <span className="animate-pulse">|</span>}
               </p>
@@ -442,7 +443,7 @@ export function MainPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="min-h-screen snap-start pt-16 flex items-start bg-transparent relative z-10">
+      <section id="about" className="min-h-screen md:snap-start pt-16 flex items-start bg-transparent relative z-10">
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -500,7 +501,7 @@ export function MainPage() {
       </section>
 
       {/* Portfolio Showcase Section */}
-      <section id="portfolio" className="min-h-screen snap-start pt-16 flex items-start bg-transparent relative z-10">
+      <section id="portfolio" className="min-h-screen md:snap-start pt-16 flex items-start bg-transparent relative z-10">
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -30 }}
@@ -522,7 +523,7 @@ export function MainPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex justify-center gap-4 mb-4"
+              className="flex flex-wrap justify-center gap-4 mb-4"
             >
               {[
                 { id: 'projects' as const, label: 'Projects', icon: '<>' },
@@ -570,7 +571,7 @@ export function MainPage() {
                   </motion.div>
 
                   {/* Projects Grid */}
-                  <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+                  <div className="grid md:grid-cols-3 gap-6 lg:gap-8 w-full min-w-0">
                     {projects.slice(0, 3).map((project, index) => (
                       <motion.div
                         key={project.id}
@@ -705,8 +706,8 @@ export function MainPage() {
 
               {/* Tech Stack Tab */}
               {activeTab === 'techstack' && (
-                <div className="pt-8">
-                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-4 lg:gap-6 max-w-6xl mx-auto">
+                <div className="pt-8 w-full min-w-0">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 max-w-6xl mx-auto w-full min-w-0">
                     {techStack.map((tech, index) => {
                       const iconUrl = techIconMap[tech]
                       return (
@@ -716,7 +717,7 @@ export function MainPage() {
                           animate={portfolioIntersected ? { opacity: 1, scale: 1 } : {}}
                           transition={{ duration: 0.3, delay: index * 0.02 }}
                           whileHover={{ scale: 1.15, y: -8 }}
-                          className="min-w-0 flex flex-col items-center justify-center"
+                          className="min-w-0 w-full flex flex-col items-center justify-center"
                           title={tech}
                         >
                           {iconUrl ? (
@@ -807,7 +808,7 @@ export function MainPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="h-screen snap-start pt-16 flex flex-col bg-transparent overflow-y-auto overflow-x-hidden relative z-10">
+      <section id="contact" className="h-screen md:snap-start pt-16 flex flex-col bg-transparent overflow-y-auto overflow-x-hidden relative z-10">
         <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 py-6">
           <div ref={contactRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
             {/* Left Column - Contact Form */}
@@ -922,9 +923,9 @@ export function MainPage() {
                 </form>
 
                 {/* Connect With Me Section */}
-                <div className="border-t border-dark-700/50 pt-4 mt-4">
-                  <h4 className="text-base font-semibold text-gray-200 mb-3">Connect With Me</h4>
-                  <div className="space-y-3">
+                <div className="border-t border-dark-700/50 pt-4 mt-4 min-w-0 w-full">
+                  <h4 className="text-base font-semibold text-gray-200 mb-3 break-words">Connect With Me</h4>
+                  <div className="space-y-3 min-w-0 w-full">
                     {/* Facebook - Full Width */}
                     {socialLinks.filter(link => link.icon === 'facebook').map((link) => (
                       <a
@@ -932,28 +933,28 @@ export function MainPage() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group"
+                        className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group min-w-0 w-full"
                       >
-                        <div className="w-11 h-11 p-0 flex items-center justify-center leading-none shrink-0">
+                        <div className="w-11 h-11 p-0 flex items-center justify-center leading-none shrink-0 flex-shrink-0">
                           <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
                           </svg>
                         </div>
-                        <span className="text-sm font-medium">{link.label || link.name}</span>
+                        <span className="text-sm font-medium break-words min-w-0 flex-1 truncate">{link.label || link.name}</span>
                       </a>
                     ))}
                     
                     {/* Other Social Links - 2x2 Grid */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-3 min-w-0 w-full">
                       {socialLinks.filter(link => link.icon !== 'facebook').map((link) => (
                         <a
                           key={link.name}
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group"
+                          className="flex items-center gap-2 px-3 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group min-w-0 w-full"
                         >
-                          <div className="w-11 h-11 p-0 flex items-center justify-center leading-none shrink-0">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 p-0 flex items-center justify-center leading-none shrink-0 flex-shrink-0">
                             {link.icon === 'instagram' && (
                               <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -975,7 +976,7 @@ export function MainPage() {
                               </svg>
                             )}
                           </div>
-                          <span className="text-sm font-medium">{link.label || link.name}</span>
+                          <span className="text-xs sm:text-sm font-medium break-words min-w-0 flex-1 truncate">{link.label || link.name}</span>
                         </a>
                       ))}
                     </div>

@@ -43,7 +43,7 @@ export function TimelinePro({ items }: TimelineProProps) {
   }
 
   return (
-    <div ref={elementRef as React.RefObject<HTMLDivElement>} className="relative w-full max-w-6xl mx-auto py-8 min-w-0">
+    <div ref={elementRef as React.RefObject<HTMLDivElement>} className="relative w-full max-w-6xl mx-auto py-8 min-w-0 px-4 sm:px-6 lg:px-8">
       {/* Center Vertical Line - Desktop Only with gradient + glow */}
       <div 
         className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 transform -translate-x-1/2" 
