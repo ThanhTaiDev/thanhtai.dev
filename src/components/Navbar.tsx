@@ -12,6 +12,21 @@ const navItems = [
 export function Navbar() {
   const { canvasEnabled, setCanvasEnabled } = useLayout()
   const [activeSection, setActiveSection] = useState('home')
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Handle scroll state for glass effect
+  useEffect(() => {
+    const handleScrollState = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScrollState, { passive: true })
+    handleScrollState() // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollState)
+    }
+  }, [])
 
   // Scroll spy để highlight active section
   useEffect(() => {
@@ -69,13 +84,19 @@ export function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+    <nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
+        isScrolled 
+          ? 'bg-black/40 backdrop-blur-md border-b border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.35)]' 
+          : 'bg-transparent border-transparent shadow-none'
+      }`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           <div className="flex-shrink-0">
             <button
               onClick={() => scrollToSection('home')}
-              className="text-3xl font-bold text-primary-400 hover:text-primary-300 transition-colors"
+              className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-blue-400 hover:from-violet-300 hover:via-fuchsia-300 hover:to-blue-300 transition-all duration-300 hover:drop-shadow-[0_0_12px_rgba(167,139,250,0.6)]"
             >
               Thanh Tai
             </button>
@@ -88,16 +109,16 @@ export function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`relative px-3 py-1.5 text-lg font-medium transition-colors ${
+                  className={`relative px-3 py-1.5 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-primary-400'
-                      : 'text-gray-300 hover:text-primary-400'
+                      ? 'text-violet-400'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {item.label}
                   {isActive && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-400"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-violet-400/80 rounded-full"
                       layoutId="navbar-indicator"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
