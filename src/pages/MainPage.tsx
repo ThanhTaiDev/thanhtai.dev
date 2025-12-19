@@ -4,10 +4,12 @@ import { SectionTitle } from '../components/ui/SectionTitle'
 import { Card } from '../components/ui/Card'
 import { Modal } from '../components/ui/Modal'
 import { CodingScreen } from '../components/CodingScreen'
+import { TimelinePro } from '../components/TimelinePro'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import { useTypingEffect } from '../hooks/useTypingEffect'
 import { useState, useEffect, FormEvent } from 'react'
 import { Project } from '../types'
+import { fetchComments, createComment, uploadImage, Comment } from '../utils/api'
 
 // Mapping tech names to Devicon icon URLs
 const techIconMap: Record<string, string> = {
@@ -139,20 +141,13 @@ const projects: Project[] = [
 ]
 
 const socialLinks = [
-  { name: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', label: "Let's Connect" },
+  { name: 'Facebook', url: 'https://www.facebook.com/ThanhTai.In4', icon: 'facebook', label: "Let's Connect" },
   { name: 'Instagram', url: 'https://www.instagram.com/_thanhtaisosad_/', icon: 'instagram', label: '@_thanhtaisosad_' },
   { name: 'Youtube', url: 'https://youtube.com', icon: 'youtube', label: '@thanhtai' },
   { name: 'GitHub', url: 'https://github.com/ThanhTaiDev', icon: 'github', label: '@ThanhTaiDev' },
   { name: 'TikTok', url: 'https://tiktok.com', icon: 'tiktok', label: '@thanhtai' },
 ]
 
-interface Comment {
-  id: string
-  name: string
-  message: string
-  timestamp: string
-  isPinned?: boolean
-}
 
 interface Certificate {
   id: string
@@ -203,42 +198,105 @@ export function MainPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false)
   
   // Comments state
-  interface Comment {
-    id: string
-    name: string
-    message: string
-    timestamp: string
-    isPinned?: boolean
-  }
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      message: 'Great work on this portfolio! The design is clean and modern.',
-      timestamp: '2 hours ago',
-      isPinned: true,
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      message: 'I really like your projects. Keep up the good work!',
-      timestamp: '5 hours ago',
-    },
-  ])
+  const [comments, setComments] = useState<Comment[]>([])
+  const [commentsLoading, setCommentsLoading] = useState(true)
   const [commentData, setCommentData] = useState({ name: '', message: '' })
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null)
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState<string | null>(null)
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
   
-  const handleCommentSubmit = (e: FormEvent) => {
+  // Fetch comments on mount
+  useEffect(() => {
+    loadComments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Default pinned comment (fallback if not in database)
+  const defaultPinnedComment: Comment = {
+    id: 'default-pinned',
+    name: 'Thanh Tai',
+    message: 'Thanks for visiting! Contact me if you need anything',
+    timestamp: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    isPinned: true,
+    profilePhoto: '/images/profile/5d20d308b815374b6e04.jpg',
+  }
+
+  const loadComments = async () => {
+    try {
+      setCommentsLoading(true)
+      const fetchedComments = await fetchComments()
+      
+      // Check if we have a pinned comment from Thanh Tai
+      const hasDefaultPinned = fetchedComments.some(
+        c => c.isPinned && c.name === 'Thanh Tai'
+      )
+      
+      // If no default pinned comment exists, add it
+      if (!hasDefaultPinned) {
+        setComments([defaultPinnedComment, ...fetchedComments])
+      } else {
+        setComments(fetchedComments)
+      }
+    } catch (error) {
+      console.error('Failed to load comments:', error)
+      // On error, show at least the default pinned comment
+      setComments([defaultPinnedComment])
+    } finally {
+      setCommentsLoading(false)
+    }
+  }
+  
+  const handleCommentSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!commentData.name.trim() || !commentData.message.trim()) return
-    
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      name: commentData.name,
-      message: commentData.message,
-      timestamp: 'Just now',
+    if (isSubmittingComment) return
+
+    try {
+      setIsSubmittingComment(true)
+      
+      // Upload profile photo to Cloudinary if provided
+      let profilePhotoUrl: string | null = null
+      if (profilePhoto) {
+        try {
+          profilePhotoUrl = await uploadImage(profilePhoto)
+        } catch (error) {
+          console.error('Failed to upload image:', error)
+          alert('Failed to upload profile photo. Comment will be posted without photo.')
+          // Continue without photo
+        }
+      }
+
+      // Create comment with Cloudinary URL
+      const newComment = await createComment({
+        name: commentData.name.trim(),
+        message: commentData.message.trim(),
+        profilePhoto: profilePhotoUrl,
+        isPinned: false,
+      })
+
+      // Add new comment to the list (it will be at the top since API returns sorted)
+      setComments([newComment, ...comments])
+      setCommentData({ name: '', message: '' })
+      setProfilePhoto(null)
+      setProfilePhotoPreview(null)
+    } catch (error) {
+      console.error('Failed to submit comment:', error)
+      alert('Failed to post comment. Please try again.')
+    } finally {
+      setIsSubmittingComment(false)
     }
-    setComments([newComment, ...comments])
-    setCommentData({ name: '', message: '' })
+  }
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setProfilePhoto(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setProfilePhotoPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   // Typing effects - both lines start together
@@ -308,15 +366,15 @@ export function MainPage() {
   }
 
   return (
-    <div className="w-full bg-transparent">
+    <div className="w-full bg-transparent relative">
       {/* Hero Section */}
-      <section id="home" className="h-screen snap-start snap-always pt-16 flex items-center bg-transparent">
+      <section id="home" className="h-screen snap-start pt-16 flex items-center bg-transparent relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-center">
             {/* Left Side - Text Content */}
             <motion.div
               ref={heroRef}
-              className="text-left"
+              className="text-left min-w-0"
               initial={{ opacity: 1, x: 0 }}
               animate={{ opacity: 1, x: 0 }}
             >
@@ -373,7 +431,7 @@ export function MainPage() {
               
               {/* Social Links */}
               <div className="flex gap-4">
-                {socialLinks.map((link) => (
+                {socialLinks.filter(link => ['facebook', 'github', 'instagram'].includes(link.icon)).map((link) => (
                   <a
                     key={link.name}
                     href={link.url}
@@ -412,8 +470,8 @@ export function MainPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="h-screen snap-start snap-always pt-16 flex items-center bg-transparent">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <section id="about" className="min-h-screen snap-start pt-16 flex items-start bg-transparent relative z-10">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={aboutIntersected ? { opacity: 1, y: 0 } : {}}
@@ -422,18 +480,19 @@ export function MainPage() {
             <SectionTitle>About Me</SectionTitle>
           </motion.div>
 
-          <div ref={aboutRef} className="grid md:grid-cols-2 gap-8 mb-16">
+          <div ref={aboutRef} className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-16">
             <motion.div
+              className="min-w-0"
               initial={{ opacity: 0, x: -50 }}
               animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card>
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Profile</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
+                <p className="text-gray-300 leading-relaxed mb-4 break-words">
                   I am a Frontend Developer passionate about creating outstanding web experiences. With a solid foundation in React, Node.js, TypeScript, and modern web technologies, I continuously strive to optimize performance and enhance user experience.
                 </p>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed break-words">
                   I enjoy learning new technologies and applying them to real-world projects, always prioritizing code quality and user experience in everything I build.
                 </p>
               </Card>
@@ -443,6 +502,7 @@ export function MainPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.3 }}
+              className="min-w-0"
             >
               <Card>
                 <h3 className="text-xl font-semibold text-primary-400 mb-4">Education</h3>
@@ -462,39 +522,14 @@ export function MainPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <h3 className="text-2xl font-semibold text-primary-400 mb-8">Timeline</h3>
-            <div className="space-y-6">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={item.year}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={aboutIntersected ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.5 + index * 0.15 }}
-                >
-                  <Card>
-                    <div className="flex flex-col md:flex-row md:items-center gap-4">
-                      <div className="text-3xl font-bold text-primary-400 min-w-[80px]">
-                        {item.year}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-xl font-semibold text-gray-200 mb-2">
-                          {item.title}
-                        </h4>
-                        <p className="text-gray-300">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+            <TimelinePro items={timeline} />
           </motion.div>
         </div>
       </section>
 
       {/* Portfolio Showcase Section */}
-      <section id="portfolio" className="min-h-screen snap-start snap-always pt-16 flex items-start bg-transparent">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+      <section id="portfolio" className="min-h-screen snap-start pt-16 flex items-start bg-transparent relative z-10">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -30 }}
             animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
@@ -563,7 +598,7 @@ export function MainPage() {
                   </motion.div>
 
                   {/* Projects Grid */}
-                  <div className="grid md:grid-cols-3 gap-8">
+                  <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
                     {projects.slice(0, 3).map((project, index) => (
                       <motion.div
                         key={project.id}
@@ -571,7 +606,7 @@ export function MainPage() {
                         animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.6, delay: 0.2 + index * 0.15 }}
                         whileHover={{ y: -8 }}
-                        className="cursor-pointer"
+                        className="cursor-pointer min-w-0"
                         onClick={() => setSelectedProject(project)}
                       >
                         <Card className="h-full flex flex-col bg-dark-800/50 border border-dark-700 hover:border-primary-500/50 transition-all">
@@ -580,7 +615,7 @@ export function MainPage() {
                             <img
                               src={project.image}
                               alt={project.title}
-                              className="w-full h-auto object-cover"
+                              className="w-full h-auto object-cover max-w-full"
                             />
                             {/* GitHub Icon Overlay */}
                             {project.links.github && (
@@ -603,7 +638,7 @@ export function MainPage() {
                             <h3 className="text-xl font-bold text-white mb-3">
                               {project.title}
                             </h3>
-                            <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                            <p className="text-gray-300 text-sm mb-4 leading-relaxed break-words">
                               {project.description}
                             </p>
                             
@@ -651,10 +686,11 @@ export function MainPage() {
 
               {/* Certificates Tab */}
               {activeTab === 'certificates' && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                   {certificates.map((cert, index) => (
                     <motion.div
                       key={cert.id}
+                      className="min-w-0"
                       initial={{ opacity: 0, y: 30 }}
                       animate={portfolioIntersected ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -666,7 +702,7 @@ export function MainPage() {
                             <img
                               src={cert.image}
                               alt={cert.title}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover max-w-full"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-6">
@@ -698,7 +734,7 @@ export function MainPage() {
               {/* Tech Stack Tab */}
               {activeTab === 'techstack' && (
                 <div className="pt-8">
-                  <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-6 max-w-6xl mx-auto">
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-4 lg:gap-6 max-w-6xl mx-auto">
                     {techStack.map((tech, index) => {
                       const iconUrl = techIconMap[tech]
                       return (
@@ -708,7 +744,7 @@ export function MainPage() {
                           animate={portfolioIntersected ? { opacity: 1, scale: 1 } : {}}
                           transition={{ duration: 0.3, delay: index * 0.02 }}
                           whileHover={{ scale: 1.15, y: -8 }}
-                          className="flex flex-col items-center justify-center"
+                          className="min-w-0 flex flex-col items-center justify-center"
                           title={tech}
                         >
                           {iconUrl ? (
@@ -750,13 +786,13 @@ export function MainPage() {
                   <img
                     src={selectedProject.image}
                     alt={selectedProject.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover max-w-full"
                   />
                 </div>
                 <h2 className="text-3xl font-bold text-primary-400 mb-4">
                   {selectedProject.title}
                 </h2>
-                <p className="text-gray-300 mb-6 leading-relaxed">
+                <p className="text-gray-300 mb-6 leading-relaxed break-words">
                   {selectedProject.description}
                 </p>
                 <div className="mb-6">
@@ -785,7 +821,7 @@ export function MainPage() {
                   {selectedProject.links.github && (
                     <a
                       href={selectedProject.links.github}
-                      target="_blank"
+                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <Button variant="outline">GitHub</Button>
@@ -799,25 +835,26 @@ export function MainPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="h-screen snap-start snap-always pt-16 flex flex-col bg-transparent overflow-y-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8">
-          <div ref={contactRef} className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <section id="contact" className="h-screen snap-start pt-16 flex flex-col bg-transparent overflow-y-auto overflow-x-hidden relative z-10">
+        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 py-6">
+          <div ref={contactRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
             {/* Left Column - Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex flex-col w-full min-w-0"
             >
-              <Card>
+              <Card className="flex flex-col h-[calc(100vh-180px)] w-full min-w-0">
                 {/* Title with icon */}
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-3xl font-bold text-primary-400">Contact</h3>
-                  <svg className="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2 mb-3">
+                  <h3 className="text-xl font-bold text-primary-400">Contact</h3>
+                  <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                   </svg>
                 </div>
                 
-                <p className="text-gray-400 mb-8">
+                <p className="text-gray-400 mb-4 text-sm">
                   Have something to discuss? Send me a message and let's talk.
                 </p>
 
@@ -832,7 +869,7 @@ export function MainPage() {
                   </motion.div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4 mb-8">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Name Field */}
                   <div className="relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -913,10 +950,11 @@ export function MainPage() {
                 </form>
 
                 {/* Connect With Me Section */}
-                <div className="border-t border-dark-700 pt-6">
-                  <h4 className="text-lg font-semibold text-gray-200 mb-4">Connect With Me</h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    {socialLinks.map((link) => (
+                <div className="border-t border-dark-700/50 pt-4 mt-4">
+                  <h4 className="text-base font-semibold text-gray-200 mb-3">Connect With Me</h4>
+                  <div className="space-y-3">
+                    {/* Facebook - Full Width */}
+                    {socialLinks.filter(link => link.icon === 'facebook').map((link) => (
                       <a
                         key={link.name}
                         href={link.url}
@@ -924,126 +962,281 @@ export function MainPage() {
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group"
                       >
-                        {link.icon === 'linkedin' && (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        <div className="w-11 h-11 p-0 flex items-center justify-center leading-none shrink-0">
+                          <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
                           </svg>
-                        )}
-                        {link.icon === 'instagram' && (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                          </svg>
-                        )}
-                        {link.icon === 'youtube' && (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                          </svg>
-                        )}
-                        {link.icon === 'github' && (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                          </svg>
-                        )}
-                        {link.icon === 'tiktok' && (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                          </svg>
-                        )}
+                        </div>
                         <span className="text-sm font-medium">{link.label || link.name}</span>
                       </a>
                     ))}
+                    
+                    {/* Other Social Links - 2x2 Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {socialLinks.filter(link => link.icon !== 'facebook').map((link) => (
+                        <a
+                          key={link.name}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-3 bg-dark-700/50 hover:bg-dark-600/50 border border-dark-600 hover:border-primary-500/50 rounded-xl text-gray-300 hover:text-primary-400 transition-all group"
+                        >
+                          <div className="w-11 h-11 p-0 flex items-center justify-center leading-none shrink-0">
+                            {link.icon === 'instagram' && (
+                              <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                              </svg>
+                            )}
+                            {link.icon === 'youtube' && (
+                              <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                              </svg>
+                            )}
+                            {link.icon === 'github' && (
+                              <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                              </svg>
+                            )}
+                            {link.icon === 'tiktok' && (
+                              <svg className="w-5 h-5 block" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                              </svg>
+                            )}
+                          </div>
+                          <span className="text-sm font-medium">{link.label || link.name}</span>
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </Card>
             </motion.div>
 
+            {/* Right Column - Comments Section */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={contactIntersected ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-col w-full min-w-0"
             >
-              <Card>
-                <h3 className="text-2xl font-semibold text-primary-400 mb-6">
-                  Send Message
+              <Card className="flex flex-col h-[calc(100vh-180px)] overflow-hidden w-full min-w-0">
+                <h3 className="text-lg font-semibold text-primary-400 mb-3 flex-shrink-0">
+                  Comments ({comments.length})
                 </h3>
 
-                {submitSuccess && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400"
-                  >
-                    Thank you! Your message has been sent successfully.
-                  </motion.div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Comment Form */}
+                <form onSubmit={handleCommentSubmit} className="space-y-3 mb-3 pb-3 border-b border-dark-700/50 flex-shrink-0">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                    <label htmlFor="comment-name" className="block text-sm font-medium text-gray-300 mb-2">
                       Name
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className={`w-full px-4 py-2 bg-dark-700 border rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                        errors.name ? 'border-red-500' : 'border-dark-600'
-                      }`}
-                      placeholder="Enter your name"
+                      id="comment-name"
+                      value={commentData.name}
+                      onChange={(e) => setCommentData({ ...commentData, name: e.target.value })}
+                      className="w-full px-4 py-2 bg-primary-500/10 border border-dark-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder-gray-500"
+                      placeholder="Your name"
                     />
-                    {errors.name && (
-                      <p className="mt-1 text-sm text-red-400">{errors.name}</p>
-                    )}
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className={`w-full px-4 py-2 bg-dark-700 border rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                        errors.email ? 'border-red-500' : 'border-dark-600'
-                      }`}
-                      placeholder="your.email@example.com"
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-400">{errors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                    <label htmlFor="comment-message" className="block text-sm font-medium text-gray-300 mb-2">
                       Message
                     </label>
                     <textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      rows={5}
-                      className={`w-full px-4 py-2 bg-dark-700 border rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none ${
-                        errors.message ? 'border-red-500' : 'border-dark-600'
-                      }`}
-                      placeholder="Enter your message..."
+                      id="comment-message"
+                      value={commentData.message}
+                      onChange={(e) => setCommentData({ ...commentData, message: e.target.value })}
+                      rows={4}
+                      className="w-full px-4 py-2 bg-primary-500/10 border border-dark-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none placeholder-gray-500"
+                      placeholder="Write a comment..."
                     />
-                    {errors.message && (
-                      <p className="mt-1 text-sm text-red-400">{errors.message}</p>
-                    )}
                   </div>
 
-                  <Button
+                  <div>
+                    <label htmlFor="comment-photo" className="block text-sm font-medium text-gray-300 mb-2">
+                      Profile Photo (Optional)
+                    </label>
+                    <div className="flex items-center gap-4">
+                      {profilePhotoPreview ? (
+                        <div className="relative">
+                          <img
+                            src={profilePhotoPreview}
+                            alt="Preview"
+                            className="w-16 h-16 rounded-full object-cover border-2 border-primary-500/50"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfilePhoto(null)
+                              setProfilePhotoPreview(null)
+                            }}
+                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <label
+                          htmlFor="comment-photo"
+                          className="w-16 h-16 rounded-full bg-dark-700 border-2 border-dashed border-dark-600 hover:border-primary-500/50 flex items-center justify-center cursor-pointer transition-colors"
+                        >
+                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        </label>
+                      )}
+                      <input
+                        type="file"
+                        id="comment-photo"
+                        accept="image/*"
+                        onChange={handlePhotoChange}
+                        className="hidden"
+                      />
+                      <span className="text-sm text-gray-400">
+                        {profilePhoto ? profilePhoto.name : 'Upload a profile photo'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
                     type="submit"
-                    variant="primary"
-                    className="w-full"
-                    disabled={isSubmitting}
+                    disabled={!commentData.name.trim() || !commentData.message.trim() || isSubmittingComment}
+                    className="w-full px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Sending...' : 'Send message'}
-                  </Button>
+                    {isSubmittingComment ? 'Posting...' : 'Post Comment'}
+                  </button>
                 </form>
+
+                {/* Comments List */}
+                <div className="flex-1 flex flex-col pt-2 min-h-0 overflow-hidden">
+                  <div className="space-y-3 pr-2 overflow-y-auto flex-1 min-h-0 max-h-full">
+                    {/* Loading State */}
+                    {commentsLoading && (
+                      <p className="text-gray-400 text-sm text-center py-8">Loading comments...</p>
+                    )}
+                    
+                    {/* Pinned Comments */}
+                    {comments.filter(c => c.isPinned).length > 0 && (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                          <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                          </svg>
+                          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Pinned Comment</span>
+                        </div>
+                        {comments
+                          .filter(c => c.isPinned)
+                          .map((comment) => (
+                            <div
+                              key={comment.id}
+                              className="p-4 bg-dark-700/50 border border-dark-600 rounded-lg"
+                            >
+                              <div className="flex items-start gap-3">
+                                {comment.profilePhoto ? (
+                                  <img
+                                    src={comment.profilePhoto}
+                                    alt={comment.name}
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-primary-500/30"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                    {comment.name.charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <h5 className="text-sm font-semibold text-gray-200">{comment.name}</h5>
+                                    {comment.isPinned && comment.name === 'Thanh Tai' && (
+                                      <span className="text-xs px-2 py-0.5 bg-primary-500/20 text-primary-400 rounded">Admin</span>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-gray-300 mb-2">{comment.message}</p>
+                                  <div className="flex justify-end">
+                                    <span className="text-xs text-gray-400">{comment.timestamp}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </>
+                    )}
+                    
+                    {/* Regular Comments - Show first 2, rest are scrollable */}
+                    {(() => {
+                      const regularComments = comments.filter(c => !c.isPinned)
+                      const initialDisplayCount = 2 // Show 2 regular comments initially
+                      const visibleComments = regularComments.slice(0, initialDisplayCount)
+                      const scrollableComments = regularComments.slice(initialDisplayCount)
+                      
+                      return (
+                        <>
+                          {/* First 2 regular comments (always visible) */}
+                          {visibleComments.map((comment) => (
+                            <div
+                              key={comment.id}
+                              className="p-4 bg-dark-700/30 border border-dark-600 rounded-lg hover:bg-dark-700/50 transition-colors"
+                            >
+                              <div className="flex items-start gap-3">
+                                {comment.profilePhoto ? (
+                                  <img
+                                    src={comment.profilePhoto}
+                                    alt={comment.name}
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-primary-500/30"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500/50 to-primary-600/50 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                    {comment.name.charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <h5 className="text-sm font-semibold text-gray-200 mb-1">{comment.name}</h5>
+                                  <p className="text-sm text-gray-300 mb-2">{comment.message}</p>
+                                  <div className="flex justify-end">
+                                    <span className="text-xs text-gray-400">{comment.timestamp}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {/* Remaining comments (scrollable) */}
+                          {scrollableComments.map((comment) => (
+                            <div
+                              key={comment.id}
+                              className="p-4 bg-dark-700/30 border border-dark-600 rounded-lg hover:bg-dark-700/50 transition-colors"
+                            >
+                              <div className="flex items-start gap-3">
+                                {comment.profilePhoto ? (
+                                  <img
+                                    src={comment.profilePhoto}
+                                    alt={comment.name}
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-primary-500/30"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500/50 to-primary-600/50 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                    {comment.name.charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <h5 className="text-sm font-semibold text-gray-200 mb-1">{comment.name}</h5>
+                                  <p className="text-sm text-gray-300 mb-2">{comment.message}</p>
+                                  <div className="flex justify-end">
+                                    <span className="text-xs text-gray-400">{comment.timestamp}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      )
+                    })()}
+                    {!commentsLoading && comments.length === 0 && (
+                      <p className="text-gray-400 text-sm text-center py-8">No comments yet. Be the first to comment!</p>
+                    )}
+                  </div>
+                </div>
               </Card>
             </motion.div>
           </div>

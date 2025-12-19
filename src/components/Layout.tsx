@@ -29,7 +29,7 @@ export function Layout({ children }: LayoutProps) {
         <AnimatedBackground />
         <CanvasOverlay enabled={canvasEnabled} />
         <Navbar />
-        <main className="relative z-10 snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth w-full bg-transparent">
+        <main className="relative z-10 snap-none lg:snap-y lg:snap-proximity overflow-y-auto overflow-x-hidden h-screen scroll-smooth w-full bg-transparent">
           {children}
         </main>
       </div>
