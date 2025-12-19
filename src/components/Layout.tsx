@@ -17,20 +17,6 @@ export function useLayout() {
   return context
 }
 
-// Helper functions for mobile detection and reduced motion
-const isMobileDevice = (): boolean => {
-  if (typeof window === 'undefined') return false
-  const width = window.innerWidth
-  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
-  const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
-  return width < 768 || mobileRegex.test(userAgent)
-}
-
-const prefersReducedMotion = (): boolean => {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
 const STORAGE_KEY = 'portfolio-effects-enabled'
 
 interface LayoutProps {
@@ -78,17 +64,13 @@ export function Layout({ children }: LayoutProps) {
     if (typeof window === 'undefined') return
     
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      const matches = 'matches' in e ? e.matches : e.matches
-      setPrefersReducedMotion(matches)
-      
-      // If user hasn't set a preference, auto-disable when reduced motion is enabled
-      if (matches && !localStorage.getItem(STORAGE_KEY)) {
-        setEffectsEnabledState(false)
-      }
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches)
     }
     
-    handleChange(mediaQuery)
+    // Check initial state
+    setPrefersReducedMotion(mediaQuery.matches)
+    
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
