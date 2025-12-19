@@ -1,9 +1,15 @@
 import { useEffect, useRef } from 'react'
 
-export function AnimatedBackground() {
+interface AnimatedBackgroundProps {
+  enabled?: boolean
+}
+
+export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    if (!enabled) return
+    
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -38,7 +44,11 @@ export function AnimatedBackground() {
     }
 
     const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1
+      // Cap devicePixelRatio for performance (max 2, or 1.5 on mobile)
+      const baseDpr = window.devicePixelRatio || 1
+      const isMobile = window.innerWidth < 768
+      const dpr = isMobile ? Math.min(baseDpr, 1.5) : Math.min(baseDpr, 2)
+      
       const width = window.innerWidth
       const height = window.innerHeight
       canvas.width = width * dpr
@@ -82,7 +92,9 @@ export function AnimatedBackground() {
       window.removeEventListener('resize', resizeCanvas)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [])
+  }, [enabled])
+
+  if (!enabled) return null
 
   return (
     <canvas

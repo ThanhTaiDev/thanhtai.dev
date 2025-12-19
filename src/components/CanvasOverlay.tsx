@@ -203,7 +203,11 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
     let time = 0
 
     const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1
+      // Cap devicePixelRatio for performance (max 2, or 1.5 on mobile)
+      const baseDpr = window.devicePixelRatio || 1
+      const isMobile = window.innerWidth < 768
+      const dpr = isMobile ? Math.min(baseDpr, 1.5) : Math.min(baseDpr, 2)
+      
       const width = window.innerWidth
       const height = window.innerHeight
 
