@@ -23,10 +23,10 @@ const codeLines = [
 
 export function CodingScreen() {
   const [displayedCode, setDisplayedCode] = useState<string[]>([])
-  const [showCursor, setShowCursor] = useState(true)
+  const [showCursor] = useState(true)
   const lineIndexRef = useRef(0)
   const charIndexRef = useRef(0)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     const typeCode = () => {

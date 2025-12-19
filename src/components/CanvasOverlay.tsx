@@ -1,23 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react'
 
-interface Segment {
-  first: boolean
-  pos: { x: number; y: number }
-  length: number
-  angle: number
-  nextPos: { x: number; y: number }
-}
+// Segment class is defined below, interface removed as it's not used as a type annotation
 
-interface Tentacle {
-  x: number
-  y: number
-  length: number
-  segmentCount: number
-  segments: Segment[]
-  rand: number
-  target?: { x: number; y: number }
-  distance?: number
-}
+// Tentacle interface defined below in class
 
 interface CanvasOverlayProps {
   enabled?: boolean
@@ -260,7 +245,7 @@ export function CanvasOverlay({ enabled = true }: CanvasOverlayProps) {
 
     // Thêm event listener cho mouseleave trên document để catch khi mouse ra ngoài window
     const handleDocumentMouseLeave = (e: MouseEvent) => {
-      if (!e.relatedTarget && !(e.relatedTarget as Node)?.nodeName) {
+      if (!e.relatedTarget && !(e.relatedTarget as unknown as Node)?.nodeName) {
         handleMouseLeave()
       }
     }

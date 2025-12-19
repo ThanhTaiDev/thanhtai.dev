@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { motion, MotionProps } from 'framer-motion'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof MotionProps> {
   children: ReactNode
   variant?: 'primary' | 'secondary' | 'outline'
 }
@@ -25,7 +25,7 @@ export function Button({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </motion.button>

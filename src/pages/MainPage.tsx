@@ -74,35 +74,7 @@ const timeline = [
   },
 ]
 
-interface Skill {
-  name: string
-  level: number
-  category: 'frontend' | 'backend' | 'tools' | 'database'
-}
-
-const skills: Skill[] = [
-  { name: 'HTML5', level: 95, category: 'frontend' },
-  { name: 'CSS3', level: 90, category: 'frontend' },
-  { name: 'JavaScript', level: 92, category: 'frontend' },
-  { name: 'TypeScript', level: 88, category: 'frontend' },
-  { name: 'React', level: 90, category: 'frontend' },
-  { name: 'Redux', level: 85, category: 'frontend' },
-  { name: 'Tailwind CSS', level: 93, category: 'frontend' },
-  { name: 'Framer Motion', level: 80, category: 'frontend' },
-  { name: 'Node.js', level: 85, category: 'backend' },
-  { name: 'MongoDB', level: 80, category: 'database' },
-  { name: 'Git', level: 90, category: 'tools' },
-  { name: 'Docker', level: 75, category: 'tools' },
-  { name: 'Figma', level: 85, category: 'tools' },
-  { name: 'Three.js', level: 70, category: 'tools' },
-]
-
-const categories = {
-  frontend: 'Frontend',
-  backend: 'Backend',
-  database: 'Database',
-  tools: 'Tools & Others',
-}
+// Skills and categories moved to TimelinePro component
 
 const projects: Project[] = [
   {
@@ -308,7 +280,7 @@ export function MainPage() {
   
   const [startTyping, setStartTyping] = useState(false)
   
-  const { displayedText: displayedTitle, isTyping: isTypingTitle } = useTypingEffect(
+  const { displayedText: _displayedTitle, isTyping: _isTypingTitle } = useTypingEffect(
     titleText, 
     startTyping ? 40 : 0
   )
