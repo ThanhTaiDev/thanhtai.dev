@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react'
 
 interface AnimatedBackgroundProps {
-  enabled?: boolean
+  enabled?: boolean // Có bật hiệu ứng nền sao hay không
 }
 
+/**
+ * Component hiệu ứng nền sao với gradient và animation nhấp nháy
+ * Tự động tối ưu performance trên mobile bằng cách giảm devicePixelRatio
+ */
 export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -16,10 +20,11 @@ export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Variables that need to be recreated on resize
+    // Các biến cần được tạo lại khi resize
     let gradient: CanvasGradient
     let stars: Array<{ x: number; y: number; size: number; opacity: number; twinkle: number }> = []
     
+    // Tạo gradient background màu tối (tím đậm)
     const createGradient = () => {
       gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
       gradient.addColorStop(0, '#0B061A')
@@ -27,9 +32,11 @@ export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) 
       gradient.addColorStop(1, '#0B061A')
     }
     
+    // Tạo mảng các ngôi sao ngẫu nhiên
     const createStars = () => {
       const logicalWidth = canvas.width / (window.devicePixelRatio || 1)
       const logicalHeight = canvas.height / (window.devicePixelRatio || 1)
+      // Số lượng sao tỷ lệ với diện tích màn hình
       const starCount = Math.floor((logicalWidth * logicalHeight) / 15000)
       stars = []
       for (let i = 0; i < starCount; i++) {
@@ -38,13 +45,14 @@ export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) 
           y: Math.random() * logicalHeight,
           size: Math.random() * 1.5,
           opacity: Math.random(),
-          twinkle: Math.random() * Math.PI * 2,
+          twinkle: Math.random() * Math.PI * 2, // Phase cho animation nhấp nháy
         })
       }
     }
 
+    // Resize canvas khi window thay đổi kích thước
     const resizeCanvas = () => {
-      // Cap devicePixelRatio for performance (max 2, or 1.5 on mobile)
+      // Giới hạn devicePixelRatio để tối ưu performance (max 2 trên desktop, 1.5 trên mobile)
       const baseDpr = window.devicePixelRatio || 1
       const isMobile = window.innerWidth < 768
       const dpr = isMobile ? Math.min(baseDpr, 1.5) : Math.min(baseDpr, 2)
@@ -57,7 +65,7 @@ export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) 
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
       
-      // Recreate gradient and stars after resize
+      // Tạo lại gradient và stars sau khi resize
       createGradient()
       createStars()
     }
@@ -68,12 +76,13 @@ export function AnimatedBackground({ enabled = true }: AnimatedBackgroundProps) 
     let animationFrameId: number
     let time = 0
 
+    // Hàm animation - vẽ lại mỗi frame
     const animate = () => {
-      // Redraw gradient background every frame to ensure seamless coverage
+      // Vẽ lại gradient background mỗi frame để đảm bảo phủ kín
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1))
 
-      // Vẽ stars với hiệu ứng nhấp nháy
+      // Vẽ các ngôi sao với hiệu ứng nhấp nháy (twinkle)
       stars.forEach((star) => {
         const twinkle = Math.sin(time * 0.5 + star.twinkle) * 0.3 + 0.7
         ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`
