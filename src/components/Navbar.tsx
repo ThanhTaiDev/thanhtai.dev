@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLayout } from './Layout'
 
+// Danh sách các menu items trong navbar
 const navItems = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
@@ -15,26 +16,26 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Handle scroll state for glass effect
+  // Xử lý scroll state để bật/tắt glass effect trên navbar
   useEffect(() => {
     const handleScrollState = () => {
       setIsScrolled(window.scrollY > 10)
     }
 
     window.addEventListener('scroll', handleScrollState, { passive: true })
-    handleScrollState() // Check initial state
+    handleScrollState() // Kiểm tra state ban đầu
 
     return () => {
       window.removeEventListener('scroll', handleScrollState)
     }
   }, [])
 
-  // Scroll spy để highlight active section
+  // Scroll spy để highlight section đang active trong viewport
   useEffect(() => {
     const handleScroll = () => {
       // Với scroll snap, section sẽ snap vào top của viewport
       // Tìm section nào đang ở top của viewport (rect.top gần 0 nhất)
-      let activeId = navItems[navItems.length - 1].id // Default to last section
+      let activeId = navItems[navItems.length - 1].id // Mặc định là section cuối
       let closestToTop = Infinity
       
       // Duyệt từ cuối lên để ưu tiên section ở cuối nếu có nhiều section cùng visible
@@ -43,8 +44,7 @@ export function Navbar() {
         const element = document.getElementById(item.id)
         if (element) {
           const rect = element.getBoundingClientRect()
-          // Nếu section này có top >= 0 và top <= một threshold nhỏ (đang ở đầu viewport)
-          // Hoặc nếu section này là section cuối cùng và đang visible
+          // Nếu section này có top >= -50 và top <= 100 (đang ở đầu viewport)
           if (rect.top >= -50 && rect.top <= 100) {
             // Section này đang ở đầu viewport
             if (Math.abs(rect.top) < closestToTop) {
@@ -61,7 +61,7 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     // Kiểm tra ngay khi mount và sau scroll snap
     handleScroll()
-    const intervalId = setInterval(handleScroll, 100)
+    const intervalId = setInterval(handleScroll, 100) // Check mỗi 100ms để bắt kịp scroll snap
     
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -69,6 +69,7 @@ export function Navbar() {
     }
   }, [])
 
+  // Cuộn đến section được chọn với smooth scroll
   const scrollToSection = (id: string) => {
     // Cập nhật active section ngay lập tức
     setActiveSection(id)
@@ -131,7 +132,7 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Effects Toggle - Hidden on mobile, shown on desktop */}
+            {/* Nút bật/tắt effects - Ẩn trên mobile, hiện trên desktop */}
             <button
               onClick={() => setEffectsEnabled(!effectsEnabled)}
               className="hidden md:block p-2 text-gray-400 hover:text-primary-400 transition-colors"
@@ -140,7 +141,7 @@ export function Navbar() {
               {effectsEnabled ? '🌐' : '🌑'}
             </button>
             
-            {/* Hamburger Menu Button - Mobile Only */}
+            {/* Nút hamburger menu - Chỉ hiện trên mobile */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 w-10 h-10 flex items-center justify-center border border-yellow-400/50 rounded transition-colors hover:bg-yellow-400/10"
@@ -160,10 +161,10 @@ export function Navbar() {
         </div>
       </div>
       
-      {/* Mobile Menu Overlay */}
+      {/* Overlay menu cho mobile */}
       {isMobileMenuOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - lớp phủ nền tối khi mở menu */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -172,7 +173,7 @@ export function Navbar() {
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
           />
           
-          {/* Menu Panel */}
+          {/* Panel menu - slide từ bên phải */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -222,7 +223,7 @@ export function Navbar() {
                 </p>
               </div>
               
-              {/* Effects Toggle - Mobile */}
+              {/* Nút bật/tắt effects - Mobile */}
               <div className="p-6 border-t border-white/10">
                 <button
                   onClick={() => setEffectsEnabled(!effectsEnabled)}
