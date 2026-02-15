@@ -25,4 +25,5 @@ dist-ssr
 
 # Documentation files
 *.md
+!README.md
 
